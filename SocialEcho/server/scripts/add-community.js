@@ -11,9 +11,11 @@ mongoose.set("strictQuery", false);
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    const connectionString = process.env.AZURE_COSMOS_DB_CONNECTION_STRING || process.env.MONGODB_URI;
+    await mongoose.connect(connectionString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      retryWrites: false,
     });
 
     LOG(kleur.green().bold("✅ Connected to MongoDB"));

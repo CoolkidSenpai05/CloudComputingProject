@@ -12,9 +12,11 @@ const rl = readline.createInterface({
 });
 
 mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGODB_URI, {
+const connectionString = process.env.AZURE_COSMOS_DB_CONNECTION_STRING || process.env.MONGODB_URI;
+mongoose.connect(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  retryWrites: false,
 });
 const getCommunityNames = async () => {
   try {

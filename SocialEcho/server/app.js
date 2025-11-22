@@ -26,10 +26,7 @@ const passport = require("passport");
 
 const PORT = process.env.PORT || 4000;
 
-const db = new Database(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const db = new Database(process.env.AZURE_COSMOS_DB_CONNECTION_STRING || process.env.MONGODB_URI);
 
 db.connect().catch((err) =>
   console.error("Error connecting to database:", err)

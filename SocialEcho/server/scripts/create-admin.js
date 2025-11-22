@@ -4,10 +4,12 @@ mongoose.set("strictQuery", true);
 const Admin = require("../models/admin.model");
 const { prompt } = require("enquirer");
 
+const connectionString = process.env.AZURE_COSMOS_DB_CONNECTION_STRING || process.env.MONGODB_URI;
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect(connectionString, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    retryWrites: false,
   })
   .then(() => {
     createAdmin();

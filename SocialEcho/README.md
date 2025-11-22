@@ -97,7 +97,7 @@ There are three distinct user roles within the system:
 Before running the application, make sure you have the following installed:
 
 - Node.js
-- MongoDB or MongoDB Atlas account
+- MongoDB, MongoDB Atlas, or Azure Cosmos DB account
 
 ### Installation
 
@@ -170,6 +170,59 @@ AZURE_STORAGE_CONTAINER="socialecho-user-avatars"
 
 - The container will be created automatically if it does not exist and will default to `socialecho-user-avatars` when the variable is not set.
 - If these variables are omitted, avatars fall back to being stored on the application server under `server/assets/userAvatars`.
+
+#### Azure Cosmos DB (Database)
+
+The application supports Azure Cosmos DB with MongoDB API for production deployments. To use Azure Cosmos DB:
+
+1. **Create an Azure Cosmos DB Account:**
+   - Go to [Azure Portal](https://portal.azure.com/)
+   - Create a new Azure Cosmos DB account
+   - Select API: **Azure Cosmos DB for MongoDB**
+   - Choose your preferred region and pricing tier
+
+2. **Get Connection String:**
+   - Navigate to your Cosmos DB account in Azure Portal
+   - Go to **Connection String** or **Keys** section
+   - Copy the **Primary Connection String** (or Secondary Connection String)
+
+3. **Configure in `.env` file:**
+   
+   Add the following variable to `server/.env`:
+   
+   ```bash
+   # Option 1: Use MONGODB_URI (supports both MongoDB and Azure Cosmos DB)
+   MONGODB_URI="mongodb://your-account-name:your-key@your-account-name.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@your-account-name@"
+   
+   # Option 2: Use dedicated Azure Cosmos DB variable (recommended)
+   AZURE_COSMOS_DB_CONNECTION_STRING="mongodb://your-account-name:your-key@your-account-name.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@your-account-name@"
+   ```
+
+   **Important Notes:**
+   - Ensure `retrywrites=false` is in the connection string (automatically handled by the application)
+   - Replace `your-account-name` and `your-key` with your actual Cosmos DB credentials
+   - If using `AZURE_COSMOS_DB_CONNECTION_STRING`, it will take precedence over `MONGODB_URI`
+
+4. **Database Name:**
+   - The database name is specified in the connection string or can be set via MongoDB URI
+   - Example: `mongodb://.../socialecho?ssl=true...` where `socialecho` is your database name
+
+5. **Firewall Configuration:**
+   - By default, Azure Cosmos DB has IP restrictions
+   - Go to **Firewall and virtual networks** in Azure Portal
+   - Add your application server's IP address or enable **Allow access from Azure portal** for testing
+   - For production, consider using Azure Private Link or VPN
+
+**Features:**
+- Fully compatible with MongoDB API - no code changes required
+- Automatic retry configuration for Azure Cosmos DB
+- Seamless migration from MongoDB/MongoDB Atlas
+- Support for global distribution and multi-region writes
+- Built-in high availability and automatic scaling
+
+**Fallback:**
+- If neither `MONGODB_URI` nor `AZURE_COSMOS_DB_CONNECTION_STRING` is set, the application will fail to start (database connection is required)
+- For local development, you can still use local MongoDB or MongoDB Atlas
 
 
 >**Note:** Configuration for context-based authentication and content moderation features are **_not mandatory_** to run the application. However, these features will not be available if the configuration is not provided.
