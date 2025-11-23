@@ -102,7 +102,7 @@ Before running the application, make sure you have the following installed:
 1. Clone the repository
 
 ```bash
-git clone https://github.com/CoolkidSenpai05/AWStest.git
+git clone https://github.com/CoolkidSenpai05/CloudComputingProject.git
 ```
 2. Go to the project directory and install dependencies for both the client and server
 
