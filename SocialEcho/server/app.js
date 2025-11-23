@@ -20,6 +20,9 @@ const decodeToken = require("./middlewares/auth/decodeToken");
 
 const app = express();
 
+// Trust proxy to get correct client IP and protocol
+app.set('trust proxy', 1);
+
 const cors = require("cors");
 const morgan = require("morgan");
 const passport = require("passport");
